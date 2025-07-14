@@ -7,7 +7,13 @@ interface Props {
 
 export default async function NoteDetailsPage({ params }: Props) {
   const id = Number(params.id);
+
+  if (isNaN(id)) {
+    throw new Error(`Invalid ID: ${params.id}`);
+  }
+
   const note = await fetchNoteById(id);
 
   return <NoteDetailsClient note={note} />;
 }
+
