@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { loadNotes } from '@/lib/NotiApi';
+import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import styles from './NotesPage.module.css';
 
@@ -12,7 +12,7 @@ export default function NotesClient() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ['noteItems', query, pageNumber],
-    queryFn: () => loadNotes({ search: query, page: pageNumber }),
+    queryFn: () => fetchNotes({ search: query, page: pageNumber }),
   });
 
   return (

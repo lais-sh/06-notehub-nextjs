@@ -4,10 +4,14 @@ import NoteDetailsClient from './NoteDetails.client';
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { id: string };
+  params: { id?: string };
 }
 
-export default async function NoteDetailsPage({ params }: Props) {
+export default async function Page({ params }: Props) {
+  if (!params?.id) {
+    throw new Error('Missing ID param');
+  }
+
   const id = Number(params.id);
 
   if (isNaN(id)) {
@@ -18,4 +22,3 @@ export default async function NoteDetailsPage({ params }: Props) {
 
   return <NoteDetailsClient note={note} />;
 }
-
