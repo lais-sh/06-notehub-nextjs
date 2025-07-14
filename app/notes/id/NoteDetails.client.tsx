@@ -1,26 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { fetchNoteById } from '@/lib/api';
 import styles from './NoteDetails.module.css';
+import { Note } from '@/types/note';
 
 interface Props {
-  id: number;
+  note: Note;
 }
 
-export default function NoteDetailsClient({ id }: Props) {
-  const {
-    data: note,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['note', id],
-    queryFn: () => fetchNoteById(id),
-  });
-
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (isError || !note) return <p>Something went wrong.</p>;
-
+export default function NoteDetailsClient({ note }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.item}>
