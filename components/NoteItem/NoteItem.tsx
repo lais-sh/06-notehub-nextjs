@@ -1,6 +1,6 @@
+import Link from 'next/link';
 import { Note } from '@/types/note';
 import styles from './NoteItem.module.css';
-import Link from 'next/link';
 
 interface Props {
   note: Note;
@@ -8,16 +8,11 @@ interface Props {
 
 export default function NoteItem({ note }: Props) {
   return (
-    <div className={styles.card}>
-      <div className={styles.header}>
-        <h2>{note.title}</h2>
-      </div>
-      <p className={styles.content}>{note.content}</p>
-      <p className={styles.date}>{new Date(note.createdAt).toLocaleDateString()}</p>
-      <div className={styles.actions}>
-        <Link href={`/notes/${note.id}`}>View details</Link>
-        {/* кнопка видалення буде пізніше */}
-      </div>
-    </div>
+    <li className={styles.item}>
+      <Link href={`/notes/${note.id}`} className={styles.link}>
+        <h3 className={styles.title}>{note.title}</h3>
+        <p className={styles.content}>{note.content}</p>
+      </Link>
+    </li>
   );
 }

@@ -1,5 +1,4 @@
 import { Note } from '@/types/note';
-import NoteItem from '@/components/NoteItem/NoteItem';
 import styles from './NoteList.module.css';
 
 interface Props {
@@ -7,11 +6,16 @@ interface Props {
 }
 
 export default function NoteList({ notes }: Props) {
+  if (notes.length === 0) {
+    return <p className={styles.empty}>No notes found.</p>;
+  }
+
   return (
     <ul className={styles.list}>
-      {notes.map(note => (
-        <li key={note.id}>
-          <NoteItem note={note} />
+      {notes.map((note) => (
+        <li key={note.id} className={styles.item}>
+          <h3 className={styles.title}>{note.title}</h3>
+          <p className={styles.content}>{note.content}</p>
         </li>
       ))}
     </ul>

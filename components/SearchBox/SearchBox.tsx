@@ -1,31 +1,32 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
-import css from './SearchBox.module.css';
+import { useState } from 'react';
+import styles from './SearchBox.module.css';
 
-type SearchBoxProps = {
-  initialQuery?: string;
-  onSearch: (query: string) => void;
-};
+interface Props {
+  onSearch: (searchTerm: string) => void;
+}
 
-export default function SearchBox({ initialQuery = '', onSearch }: SearchBoxProps) {
-  const [query, setQuery] = useState(initialQuery);
+export default function SearchBox({ onSearch }: Props) {
+  const [search, setSearch] = useState('');
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setQuery(newValue);
-    onSearch(newValue);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(search.trim());
   };
 
   return (
-    <input
-      className={css.input}
-      type="search"
-      value={query}
-      placeholder="Type to search notes..."
-      onChange={handleChange}
-      autoComplete="off"
-    />
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Search notes..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className={styles.input}
+      />
+      <button type="submit" className={styles.button}>
+        Search
+      </button>
+    </form>
   );
 }
-

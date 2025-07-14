@@ -1,18 +1,7 @@
-import { fetchNoteById } from '@/lib/api';
-import NoteDetailsClient from './notes/[id]/NoteDetails.client';
+export const dynamic = 'force-dynamic';
 
-interface Props {
-  params: { id: string };
-}
+import NotesPage from './notes/NotesPage';
 
-export default async function NoteDetailsPage({ params }: Props) {
-  const id = Number(params.id);
-
-  if (isNaN(id)) {
-    throw new Error(`Invalid ID: ${params.id}`);
-  }
-
-  const note = await fetchNoteById(id);
-
-  return <NoteDetailsClient note={note} />;
+export default function Home() {
+  return <NotesPage />;
 }

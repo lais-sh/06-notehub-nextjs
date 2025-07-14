@@ -1,64 +1,24 @@
 'use client';
 
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import styles from './NotesPage.module.css';
 
 export default function NotesClient() {
-  const [query, setQuery] = useState('');
-  const [pageNumber, setPageNumber] = useState(1);
-
-  const { data, isFetching, error } = useQuery({
-    queryKey: ['noteItems', query, pageNumber],
-    queryFn: () => fetchNotes({ search: query, page: pageNumber }),
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['notes', { page: 1 }],
+    queryFn: () => fetchNotes({ page: 1 }),
   });
 
+  if (isLoading) return <p>Loading, please wait...</p>;
+  if (isError) return <p>Could not fetch notes. {String(error)}</p>;
+  if (!data) return <p>Something went wrong.</p>;
+
   return (
-    <div className={styles.wrapper}>
-      <header className={styles.header}>
-        <input
-          className={styles.search}
-          type="text"
-          placeholder="Find notes"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setPageNumber(1);
-          }}
-        />
-        <span className={styles.pageInfo}>
-          Page {pageNumber} of {data?.totalPages ?? 1}
-        </span>
-      </header>
-
-      {isFetching && <p>Loading...</p>}
-      {error && <p>Error fetching notes</p>}
-
-      <section>
-        {data?.notes?.length ? (
-          <NoteList notes={data.notes} />
-        ) : (
-          <p>No results found.</p>
-        )}
-      </section>
-
-      <footer className={styles.pagination}>
-        <button
-          disabled={pageNumber === 1}
-          onClick={() => setPageNumber((prev) => prev - 1)}
-        >
-          Back
-        </button>
-
-        <button
-          disabled={pageNumber >= (data?.totalPages ?? 1)}
-          onClick={() => setPageNumber((prev) => prev + 1)}
-        >
-          Next
-        </button>
-      </footer>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Your Notes</h1>
+      <NoteList notes={data.notes} />
     </div>
   );
 }

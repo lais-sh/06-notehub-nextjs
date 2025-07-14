@@ -4,13 +4,16 @@ import styles from './Header.module.css';
 export default function Header() {
   return (
     <header className={styles.header}>
-      <Link href="/" aria-label="Home">NoteHub</Link>
-      <nav aria-label="Main Navigation">
-        <ul className={styles.navigation}>
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/notes">Notes</Link></li>
-        </ul>
-      </nav>
+      <div className={styles.container}>
+        <Link href="/" className={styles.logo}>
+          NoteHub
+        </Link>
+        <nav className={styles.nav}>
+          <Link href="/">Home</Link>
+          <Link href="/notes">Notes</Link>
+          <Link href="/about">About</Link>
+        </nav>
+      </div>
     </header>
   );
 }

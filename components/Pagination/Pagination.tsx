@@ -1,42 +1,35 @@
-import React from 'react';
-import css from './Pagination.module.css';
+'use client';
 
-type PaginationProps = {
+import styles from './Pagination.module.css';
+
+interface Props {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-};
+}
 
-export default function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: PaginationProps) {
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+export default function Pagination({ currentPage, totalPages, onPageChange }: Props) {
+  if (totalPages <= 1) return null;
+
+  const handleClick = (page: number) => {
+    if (page !== currentPage) {
       onPageChange(page);
     }
   };
 
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
   return (
-    <div className={css.pagination}>
-      <button
-        onClick={() => goToPage(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        &lt; Prev
-      </button>
-
-      <span>
-        Page {currentPage} of {totalPages}
-      </span>
-
-      <button
-        onClick={() => goToPage(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        Next &gt;
-      </button>
+    <div className={styles.pagination}>
+      {pages.map((page) => (
+        <button
+          key={page}
+          className={`${styles.button} ${page === currentPage ? styles.active : ''}`}
+          onClick={() => handleClick(page)}
+        >
+          {page}
+        </button>
+      ))}
     </div>
   );
 }
