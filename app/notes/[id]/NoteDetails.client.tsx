@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import NoteModal from '@/components/NoteModal/NoteModal';
 import { Note } from '@/types/note';
 
 interface Props {
@@ -7,10 +9,18 @@ interface Props {
 }
 
 export default function NoteDetailsClient({ note }: Props) {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>{note.title}</h1>
-      <p>{note.content}</p>
-    </div>
+    <>
+      {isOpen && (
+        <NoteModal
+          title={note.title}
+          content={note.content}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
+    </>
   );
 }
+
