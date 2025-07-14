@@ -1,14 +1,13 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/queryClient';
 import { fetchNotes } from '@/lib/api';
-import NotesClient from '../Notes.client';
+import NotesClient from './Notes.client';
 
 export default async function NotesPage() {
   const queryClient = getQueryClient();
 
-  // SSR-запит
   await queryClient.prefetchQuery({
-    queryKey: ['notes', { page: 1 }],
+    queryKey: ['notes-1'],
     queryFn: () => fetchNotes({ page: 1 }),
   });
 

@@ -6,13 +6,8 @@ import NoteList from '@/components/NoteList/NoteList';
 import styles from './NotesPage.module.css';
 
 export default function NotesClient() {
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ['notes', { page: 1 }],
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['notes-1'],
     queryFn: () => fetchNotes({ page: 1 }),
   });
 
