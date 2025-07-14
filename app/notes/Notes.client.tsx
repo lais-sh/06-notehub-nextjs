@@ -7,7 +7,7 @@ import styles from './NotesPage.module.css';
 
 export default function NotesClient() {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['notes-1'],
+    queryKey: ['notes', { page: 1 }],
     queryFn: () => fetchNotes({ page: 1 }),
   });
 
@@ -22,3 +22,4 @@ export default function NotesClient() {
     </div>
   );
 }
+
