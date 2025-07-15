@@ -1,22 +1,16 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import NoteForm from '@/components/NoteForm/NoteForm';
+import { useEffect } from 'react';
 import css from './NoteModal.module.css';
 
 interface NoteModalProps {
   isOpen: boolean;
   onClose: () => void;
+  children: React.ReactNode;
 }
 
-export default function NoteModal({ isOpen, onClose }: NoteModalProps) {
-  const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
+const modalRoot = document.getElementById('modal-root') || document.body;
 
-  useEffect(() => {
-    setModalRoot(document.getElementById('modal-root') || document.body);
-  }, []);
-
+export default function NoteModal({ isOpen, onClose, children }: NoteModalProps) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -33,7 +27,7 @@ export default function NoteModal({ isOpen, onClose }: NoteModalProps) {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen || !modalRoot) return null;
+  if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
@@ -47,7 +41,8 @@ export default function NoteModal({ isOpen, onClose }: NoteModalProps) {
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        <NoteForm onClose={onClose} />
+        {children}
+        <button onClick={onClose} className={css.button}>Close</button>
       </div>
     </div>,
     modalRoot

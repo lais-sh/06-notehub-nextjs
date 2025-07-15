@@ -47,3 +47,8 @@ export async function deleteNote(noteId: number): Promise<Note> {
   const response = await axios.delete<Note>(`${API_URL}/${noteId}`, config);
   return response.data;
 }
+
+export async function fetchNoteById(noteId: number): Promise<Note> {
+  const response = await axios.get<Note>(`${API_URL}/${noteId}`, config);
+  return response.data;
+}
