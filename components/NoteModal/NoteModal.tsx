@@ -1,41 +1,55 @@
 'use client';
 
-import { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import styles from './NoteModal.module.css';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import NoteForm from '@/components/NoteForm/NoteForm';
+import css from './NoteModal.module.css';
 
 interface NoteModalProps {
-  title: string;
-  content: string;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-export default function NoteModal({ title, content, onClose }: NoteModalProps) {
+export default function NoteModal({ isOpen, onClose }: NoteModalProps) {
+  const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
+
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+    setModalRoot(document.getElementById('modal-root') || document.body);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
     };
 
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleEscape);
 
     return () => {
-      document.body.style.overflow = 'auto';
-      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleEscape);
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
 
-  return ReactDOM.createPortal(
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className={styles.close}>×</button>
-        <h2>{title}</h2>
-        <p>{content}</p>
-        <button onClick={onClose} className={styles.button}>Close</button>
+  if (!isOpen || !modalRoot) return null;
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  return createPortal(
+    <div
+      className={css.backdrop}
+      role="dialog"
+      aria-modal="true"
+      onClick={handleBackdropClick}
+    >
+      <div className={css.modal}>
+        <NoteForm onClose={onClose} />
       </div>
     </div>,
-    document.body
+    modalRoot
   );
 }
