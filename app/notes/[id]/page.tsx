@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { fetchNoteById } from '@/lib/noteService';
+import { fetchNoteById } from '@/lib/api';
 import NoteDetailsClient from './NoteDetails.client';
 
 interface Props {

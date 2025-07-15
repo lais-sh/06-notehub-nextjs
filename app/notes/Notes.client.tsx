@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchNotes } from '@/lib/noteService';
+import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import NoteModal from '@/components/NoteModal/NoteModal';
 import NoteForm from '@/components/NoteForm/NoteForm';
 
-import type { FetchNotesResponse } from '@/lib/noteService';
+import type { FetchNotesResponse } from '@/lib/api';
 
 interface NotesClientProps {
   initialData: FetchNotesResponse;
