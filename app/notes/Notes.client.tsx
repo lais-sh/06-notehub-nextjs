@@ -7,6 +7,7 @@ import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import NoteModal from '@/components/NoteModal/NoteModal';
+import NoteForm from '@/components/NoteForm/NoteForm';
 
 import type { FetchNotesResponse } from '@/lib/noteService';
 
@@ -17,7 +18,7 @@ interface NotesClientProps {
 export default function NotesClient({ initialData }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);  // ✅ Управление модалкой
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data } = useQuery({
     queryKey: ['notes', page, search],
@@ -44,7 +45,9 @@ export default function NotesClient({ initialData }: NotesClientProps) {
       <NoteModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
+      >
+        <NoteForm onClose={() => setIsModalOpen(false)} />
+      </NoteModal>
     </>
   );
 }
