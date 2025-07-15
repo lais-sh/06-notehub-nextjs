@@ -12,15 +12,10 @@ export default function NoteDetailsClient({ note }: Props) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <>
-      {isOpen && (
-        <NoteModal
-          title={note.title}
-          content={note.content}
-          onClose={() => setIsOpen(false)}
-        />
-      )}
-    </>
+    <NoteModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <h1>{note.title}</h1>
+      <p>{note.content}</p>
+    </NoteModal>
   );
 }
 
