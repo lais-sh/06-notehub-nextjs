@@ -1,24 +1,63 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
-import styles from './NotesPage.module.css';
+import Pagination from '@/components/Pagination/Pagination';
+import SearchBox from '@/components/SearchBox/SearchBox';
+import NoteModal from '@/components/NoteModal/NoteModal';
+import { Note } from '@/types/note';
 
-export default function NotesClient() {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['notes', { page: 1 }],
-    queryFn: () => fetchNotes({ page: 1 }),
+interface NotesClientProps {
+  initialData: any;
+}
+
+export default function NotesClient({ initialData }: NotesClientProps) {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['notes', page, search],
+    queryFn: () => fetchNotes({ page, search }),
+    initialData,
   });
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (isError) return <p>Could not fetch notes. {String(error)}</p>;
-  if (!data) return <p>Something went wrong.</p>;
+  const openModal = (note: Note) => {
+    setSelectedNote(note);
+  };
+
+  const closeModal = () => {
+    setSelectedNote(null);
+  };
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Failed to load notes.</p>;
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Your Notes</h1>
-      <NoteList notes={data.notes} />
-    </div>
+    <>
+      <SearchBox onSearch={setSearch} />
+      
+      <NoteList
+        notes={data.results}
+        onNoteClick={openModal}
+      />
+
+      <Pagination
+        currentPage={page}
+        totalPages={data.totalPages}
+        onPageChange={setPage}
+      />
+
+      {selectedNote && (
+        <NoteModal
+          title={selectedNote.title}
+          content={selectedNote.content}
+          onClose={closeModal}
+        />
+      )}
+    </>
   );
 }
+
