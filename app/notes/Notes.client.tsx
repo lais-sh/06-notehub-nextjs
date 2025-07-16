@@ -24,17 +24,19 @@ export default function NotesClient({ initialData }: NotesClientProps) {
 
   const [debouncedSearch] = useDebounce(search, 500);
 
-  const { data } = useQuery<FetchNotesResponse>({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['notes', page, debouncedSearch],
     queryFn: () => fetchNotes({ page, search: debouncedSearch }),
     initialData,
-    placeholderData: initialData,
   });
 
   const handleSearch = (query: string) => {
     setPage(1);
     setSearch(query);
   };
+
+  if (isLoading) return <p>Loading notes...</p>;
+  if (isError) return <p style={{ color: 'red' }}>Failed to load notes.</p>;
 
   return (
     <>
@@ -55,10 +57,7 @@ export default function NotesClient({ initialData }: NotesClientProps) {
       )}
 
       {isModalOpen && (
-        <NoteModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        >
+        <NoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <NoteForm onClose={() => setIsModalOpen(false)} />
         </NoteModal>
       )}
