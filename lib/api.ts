@@ -35,6 +35,8 @@ export async function fetchNotes(params: {
     params: { page, perPage, ...(search && { search }) },
   });
 
+ console.log('Заметки с сервера:', response.data.notes);
+
   return response.data;
 }
 

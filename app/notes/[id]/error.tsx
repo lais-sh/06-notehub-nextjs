@@ -1,5 +1,13 @@
 'use client';
 
-export default function Error({ error }: { error: Error }) {
-  return <p>Could not fetch note details. {error.message}</p>;
+interface ErrorMessageProps {
+  message: string;
+}
+
+export default function ErrorMessage({ message }: ErrorMessageProps) {
+  return (
+    <div style={{ color: 'red', padding: '1rem' }}>
+      {message}
+    </div>
+  );
 }

@@ -1,21 +1,39 @@
 'use client';
 
-import { useState } from 'react';
-import NoteModal from '@/components/NoteModal/NoteModal';
-import { Note } from '@/types/note';
+import { useQuery } from '@tanstack/react-query';
+import { fetchNoteById } from '@/lib/api';
+import type { Note } from '@/types/note';
 
 interface Props {
-  note: Note;
+  noteId: number;
 }
 
-export default function NoteDetailsClient({ note }: Props) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function NoteDetailsClient({ noteId }: Props) {
+  const {
+    data: note,
+    isLoading,
+    isError,
+  } = useQuery<Note>({
+    queryKey: ['note', noteId],
+    queryFn: () => fetchNoteById(noteId),
+    refetchOnMount: false,
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError || !note) {
+    return <p style={{ color: 'red' }}>Failed to load note</p>;
+  }
 
   return (
-    <NoteModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <div style={{ padding: '2rem' }}>
       <h1>{note.title}</h1>
       <p>{note.content}</p>
-    </NoteModal>
+      <p><strong>Tag:</strong> {note.tag}</p>
+      <p><em>Created at: {new Date(note.createdAt).toLocaleString()}</em></p>
+    </div>
   );
 }
 

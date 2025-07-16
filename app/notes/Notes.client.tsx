@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
+
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
@@ -20,11 +22,19 @@ export default function NotesClient({ initialData }: NotesClientProps) {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data } = useQuery({
-    queryKey: ['notes', page, search],
-    queryFn: () => fetchNotes({ page, search }),
+  const [debouncedSearch] = useDebounce(search, 500);
+
+  const { data } = useQuery<FetchNotesResponse>({
+    queryKey: ['notes', page, debouncedSearch],
+    queryFn: () => fetchNotes({ page, search: debouncedSearch }),
     initialData,
+    placeholderData: initialData,
   });
+
+  const handleSearch = (query: string) => {
+    setPage(1);
+    setSearch(query);
+  };
 
   return (
     <>
@@ -32,22 +42,26 @@ export default function NotesClient({ initialData }: NotesClientProps) {
         ➕ New Note
       </button>
 
-      <SearchBox onSearch={setSearch} />
+      <SearchBox onSearch={handleSearch} />
 
       <NoteList notes={data.notes} />
 
-      <Pagination
-        currentPage={page}
-        totalPages={data.totalPages}
-        onPageChange={setPage}
-      />
+      {data.totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={data.totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
-      <NoteModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      >
-        <NoteForm onClose={() => setIsModalOpen(false)} />
-      </NoteModal>
+      {isModalOpen && (
+        <NoteModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <NoteForm onClose={() => setIsModalOpen(false)} />
+        </NoteModal>
+      )}
     </>
   );
 }

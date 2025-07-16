@@ -16,5 +16,5 @@ export default async function NoteDetailsPage({ params }: Props) {
 
   const note = await fetchNoteById(id);
 
-  return <NoteDetailsClient note={note} />;
+  return <NoteDetailsClient noteId={id} />;
 }
