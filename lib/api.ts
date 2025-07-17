@@ -26,16 +26,19 @@ export interface FetchNotesResponse {
 export async function fetchNotes(params: {
   page: number;
   search?: string;
-  perPage?: number;
 }): Promise<FetchNotesResponse> {
-  const { page, search = '', perPage = 12 } = params;
+  const { page, search = '' } = params;
 
   const response = await axios.get<FetchNotesResponse>(API_URL, {
     headers: config.headers,
-    params: { page, perPage, ...(search && { search }) },
+    params: {
+      page,
+      perPage: 10,
+      ...(search && { search }),
+    },
   });
 
- console.log('Заметки с сервера:', response.data.notes);
+  console.log('📒 Получено заметок:', response.data.notes);
 
   return response.data;
 }
