@@ -1,13 +1,14 @@
 'use client';
 
-interface ErrorMessageProps {
-  message: string;
+interface ErrorProps {
+  error: Error;
 }
 
-export default function ErrorMessage({ message }: ErrorMessageProps) {
+export default function ErrorPage({ error }: ErrorProps) {
   return (
-    <div style={{ color: 'red', padding: '1rem' }}>
-      {message}
+    <div style={{ padding: '2rem', color: 'red' }}>
+      <h1>Something went wrong</h1>
+      <p>{error.message}</p>
     </div>
   );
 }
