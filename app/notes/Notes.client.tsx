@@ -28,6 +28,7 @@ export default function NotesClient({ initialData }: NotesClientProps) {
     queryKey: ['notes', page, debouncedSearch],
     queryFn: () => fetchNotes({ page, search: debouncedSearch }),
     initialData,
+    placeholderData: previous => previous,
   });
 
   const handleSearch = (query: string) => {
@@ -35,7 +36,7 @@ export default function NotesClient({ initialData }: NotesClientProps) {
     setSearch(query);
   };
 
-  if (isLoading) return <p>Loading notes...</p>;
+  if (isLoading && !data) return <p>Loading notes...</p>;
   if (isError) return <p style={{ color: 'red' }}>Failed to load notes.</p>;
 
   return (
@@ -46,9 +47,9 @@ export default function NotesClient({ initialData }: NotesClientProps) {
 
       <SearchBox onSearch={handleSearch} />
 
-      <NoteList notes={data.notes} />
+      <NoteList notes={data?.notes || []} />
 
-      {data.totalPages > 1 && (
+      {data?.totalPages > 1 && (
         <Pagination
           currentPage={page}
           totalPages={data.totalPages}

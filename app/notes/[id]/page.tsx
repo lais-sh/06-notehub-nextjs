@@ -1,23 +1,22 @@
 export const dynamic = 'force-dynamic';
 
-import { HydrationBoundary, dehydrate, QueryClient } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api';
+import { HydrationBoundary, dehydrate, QueryClient } from '@tanstack/react-query';
 import NoteDetailsClient from './NoteDetails.client';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function NoteDetailsPage({ params }: Props) {
-  const id = Number(params.id);
+  const { id: idString } = await params;
+  const id = Number(idString);
 
   if (isNaN(id)) {
-    throw new Error(`Invalid ID: ${params.id}`);
+    throw new Error(`Invalid ID: ${idString}`);
   }
 
   const queryClient = new QueryClient();
-
-  // Prefetch для гідратації React Query
   await queryClient.prefetchQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
